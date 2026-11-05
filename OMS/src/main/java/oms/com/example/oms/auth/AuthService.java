@@ -22,7 +22,7 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // register api services
+    // register services business handler
     public RegisterResponseDto register(RegisterDto request) {
 
         if (authRepository.existsByEmail(request.email())) {
@@ -39,6 +39,7 @@ public class AuthService {
         return new RegisterResponseDto("User registered successfully", false);
     }
 
+    // login services business handler
     public LoginResponseDto login(LoginDto request) {
 
         User user = authRepository
@@ -50,7 +51,7 @@ public class AuthService {
         }
 
         return new LoginResponseDto(
-                null,
+                "verified",
                 false,
                 UUID.randomUUID(),
                 "admin"
