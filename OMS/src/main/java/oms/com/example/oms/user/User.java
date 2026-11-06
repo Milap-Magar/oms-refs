@@ -33,4 +33,6 @@ public class User {
     // Usage constructures
     public User(){}
 
+    public User(int i, String admin, String mail, String s, String number) {
+    }
 }
