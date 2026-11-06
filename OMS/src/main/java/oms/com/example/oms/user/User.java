@@ -33,5 +33,4 @@ public class User {
     // Usage constructures
     public User(){}
 
-
 }
