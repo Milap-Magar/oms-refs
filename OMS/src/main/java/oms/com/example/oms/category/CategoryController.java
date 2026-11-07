@@ -1,14 +1,14 @@
 package oms.com.example.oms.category;
 
 import jakarta.validation.Valid;
+import oms.com.example.oms.category.dto.CategoryCreatedDto;
 import oms.com.example.oms.category.dto.CategoryRequestDto;
 import oms.com.example.oms.category.dto.CategoryResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/category")
@@ -20,10 +20,18 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @PostMapping
-    public ResponseEntity<CategoryResponseDto> category(
-            @Valid @RequestBody CategoryRequestDto request){
-        CategoryResponseDto response = categoryService.createCategory(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    // get category all
+    @GetMapping
+    public List<CategoryResponseDto> category() {
+        return categoryService.fetchCategory();
     }
+
+    // Create category
+    @PostMapping
+    public ResponseEntity<CategoryCreatedDto> category(
+            @Valid @RequestBody CategoryRequestDto request
+    ){
+        CategoryCreatedDto response = categoryService.createCategory(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    };
 }
