@@ -4,9 +4,11 @@ import jakarta.validation.Valid;
 import oms.com.example.oms.category.dto.CategoryCreatedDto;
 import oms.com.example.oms.category.dto.CategoryRequestDto;
 import oms.com.example.oms.category.dto.CategoryResponseDto;
+import oms.com.example.oms.category.dto.CategoryUpdateDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
@@ -32,6 +34,7 @@ public class CategoryController {
     ){
         return categoryService.fetchCategoryById(id);
     }
+
     // Create category
     @PostMapping
     public ResponseEntity<CategoryCreatedDto> category(
@@ -39,5 +42,22 @@ public class CategoryController {
     ){
         CategoryCreatedDto response = categoryService.createCategory(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    };
+
+    // Update category
+    @PutMapping("/{id}")
+    public ResponseEntity<CategoryResponseDto> categoryUpdate(
+            @Valid @PathVariable long id,
+            @RequestBody CategoryUpdateDto categoryUpdateDto
+    ) throws Exception {
+        if(categoryUpdateDto.name() == null){
+            throw new Exception("Category name is Required");
+        }
+        if(categoryUpdateDto.description() == null){
+            throw new Exception("Category description is Required");
+        }
+
+        CategoryResponseDto response = categoryService.updateCategory(id, categoryUpdateDto);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     };
 }

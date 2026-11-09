@@ -3,6 +3,7 @@ package oms.com.example.oms.category;
 import oms.com.example.oms.category.dto.CategoryCreatedDto;
 import oms.com.example.oms.category.dto.CategoryRequestDto;
 import oms.com.example.oms.category.dto.CategoryResponseDto;
+import oms.com.example.oms.category.dto.CategoryUpdateDto;
 import oms.com.example.oms.common.exception.CategoryAlreadyExists;
 import oms.com.example.oms.common.exception.CategoryNotFound;
 import org.springframework.stereotype.Service;
@@ -62,5 +63,24 @@ public class CategoryService {
 
         // entity -> response DTO
         return new CategoryCreatedDto(saved.getId(), "Category Created");
+    }
+
+    // update the values in category
+    // by name || description
+    public CategoryResponseDto updateCategory(long id, CategoryUpdateDto categoryUpdateDto){
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFound("Category not found"));
+
+        if(categoryUpdateDto.name() != null){
+            category.setName(categoryUpdateDto.name());
+        }
+        if(categoryUpdateDto.description() != null){
+            category.setDescription(categoryUpdateDto.description());
+        }
+
+        Category saved = categoryRepository.save(category);
+        return new CategoryResponseDto(
+                saved.getId(), saved.getName(), saved.getDescription()
+        );
     }
 }
