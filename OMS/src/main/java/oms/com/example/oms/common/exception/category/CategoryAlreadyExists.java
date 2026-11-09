@@ -1,4 +1,4 @@
-package oms.com.example.oms.common.exception;
+package oms.com.example.oms.common.exception.category;
 import java.lang.String;
 
 public class CategoryAlreadyExists extends RuntimeException {

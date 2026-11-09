@@ -4,13 +4,12 @@ import oms.com.example.oms.category.dto.CategoryCreatedDto;
 import oms.com.example.oms.category.dto.CategoryRequestDto;
 import oms.com.example.oms.category.dto.CategoryResponseDto;
 import oms.com.example.oms.category.dto.CategoryUpdateDto;
-import oms.com.example.oms.common.exception.CategoryAlreadyExists;
-import oms.com.example.oms.common.exception.CategoryNotFound;
+import oms.com.example.oms.common.exception.category.CategoryAlreadyExists;
+import oms.com.example.oms.common.exception.category.CategoryNotFound;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CategoryService {

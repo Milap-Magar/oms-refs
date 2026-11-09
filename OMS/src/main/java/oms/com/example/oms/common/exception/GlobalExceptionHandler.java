@@ -1,5 +1,8 @@
 package oms.com.example.oms.common.exception;
 
+import oms.com.example.oms.common.exception.category.CategoryAlreadyExists;
+import oms.com.example.oms.common.exception.category.CategoryNotFound;
+import oms.com.example.oms.common.exception.category.CategoryRequired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
