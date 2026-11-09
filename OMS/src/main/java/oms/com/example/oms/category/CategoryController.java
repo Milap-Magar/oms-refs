@@ -1,15 +1,11 @@
 package oms.com.example.oms.category;
 
 import jakarta.validation.Valid;
-import oms.com.example.oms.category.dto.CategoryCreatedDto;
-import oms.com.example.oms.category.dto.CategoryRequestDto;
-import oms.com.example.oms.category.dto.CategoryResponseDto;
-import oms.com.example.oms.category.dto.CategoryUpdateDto;
-import org.apache.coyote.Response;
+import oms.com.example.oms.category.dto.*;
+import oms.com.example.oms.common.exception.CategoryRequired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
@@ -48,14 +44,11 @@ public class CategoryController {
     // Update category
     @PutMapping("/{id}")
     public ResponseEntity<CategoryResponseDto> categoryUpdate(
-            @Valid @PathVariable long id,
-            @RequestBody CategoryUpdateDto categoryUpdateDto
-    ) throws Exception {
-        if(categoryUpdateDto.name() == null){
-            throw new Exception("Category name is Required");
-        }
-        if(categoryUpdateDto.description() == null){
-            throw new Exception("Category description is Required");
+            @PathVariable long id,
+            @Valid @RequestBody CategoryUpdateDto categoryUpdateDto
+    ) {
+        if(categoryUpdateDto == null){
+            throw new CategoryRequired("Category name is Required");
         }
 
         CategoryResponseDto response = categoryService.updateCategory(id, categoryUpdateDto);
@@ -65,10 +58,10 @@ public class CategoryController {
     // Delete category by id
     @DeleteMapping("/{id}")
     public ResponseEntity<String> categoryDelete(
-            @Valid @PathVariable long id
+            @PathVariable long id
     ){
         categoryService.deleteCategory(id);
-        return ResponseEntity.status(HttpStatus.OK).body("Data deleted of " + id);
+        return ResponseEntity.status(HttpStatus.OK).body("Category " + id + "deleted");
     }
 
 }

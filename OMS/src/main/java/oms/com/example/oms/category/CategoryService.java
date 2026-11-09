@@ -7,7 +7,6 @@ import oms.com.example.oms.category.dto.CategoryUpdateDto;
 import oms.com.example.oms.common.exception.CategoryAlreadyExists;
 import oms.com.example.oms.common.exception.CategoryNotFound;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,13 +69,6 @@ public class CategoryService {
     public CategoryResponseDto updateCategory(long id, CategoryUpdateDto categoryUpdateDto){
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new CategoryNotFound("Category not found"));
-
-        if(categoryUpdateDto.name() != null){
-            category.setName(categoryUpdateDto.name());
-        }
-        if(categoryUpdateDto.description() != null){
-            category.setDescription(categoryUpdateDto.description());
-        }
 
         Category saved = categoryRepository.save(category);
         return new CategoryResponseDto(
