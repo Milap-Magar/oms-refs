@@ -83,4 +83,13 @@ public class CategoryService {
                 saved.getId(), saved.getName(), saved.getDescription()
         );
     }
+
+    // delete the data row as a whole
+    public void deleteCategory(long id){
+
+        if(!categoryRepository.existsById(id)){
+            throw new CategoryNotFound("Category not found");
+        }
+        categoryRepository.deleteById(id);
+    }
 }

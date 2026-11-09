@@ -5,6 +5,7 @@ import oms.com.example.oms.category.dto.CategoryCreatedDto;
 import oms.com.example.oms.category.dto.CategoryRequestDto;
 import oms.com.example.oms.category.dto.CategoryResponseDto;
 import oms.com.example.oms.category.dto.CategoryUpdateDto;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -60,4 +61,14 @@ public class CategoryController {
         CategoryResponseDto response = categoryService.updateCategory(id, categoryUpdateDto);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     };
+
+    // Delete category by id
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> categoryDelete(
+            @Valid @PathVariable long id
+    ){
+        categoryService.deleteCategory(id);
+        return ResponseEntity.status(HttpStatus.OK).body("Data deleted of " + id);
+    }
+
 }
