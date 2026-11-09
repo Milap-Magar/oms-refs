@@ -25,9 +25,8 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-
     // fetching users all
-    public Page<UserResponseDto> users(Pageable pageable) {
+    public Page<UserResponseDto> fetchUsers(Pageable pageable) {
         Page<User> users = userRepository.findAll(pageable);
         return users.map(u -> new UserResponseDto(
                 u.getId(),

@@ -27,7 +27,7 @@ public class UserController {
             @RequestParam(defaultValue = "20") int size
     ){
         Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(userService.users(pageable));
+        return ResponseEntity.ok(userService.fetchUsers(pageable));
     }
 
     //route mapping
@@ -37,4 +37,7 @@ public class UserController {
     ){
         return userService.userById(id);
     }
+
+    // add category
+//    @PostMapping
 }

@@ -11,7 +11,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler{
 
     @ExceptionHandler(CategoryAlreadyExists.class)
+
+    // CategoryAlreadyExists
     public ResponseEntity CategoryAlreadyExists(Exception ex){
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
+    // CategoryNotFound
+    public ResponseEntity CategoryNotFound(Exception ex){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 }

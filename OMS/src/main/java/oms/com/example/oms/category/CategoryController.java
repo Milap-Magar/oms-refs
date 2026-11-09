@@ -26,6 +26,12 @@ public class CategoryController {
         return categoryService.fetchCategory();
     }
 
+    // get category by id
+    @GetMapping("/{id}")
+    public CategoryResponseDto getCategoryById(@PathVariable long id
+    ){
+        return categoryService.fetchCategoryById(id);
+    }
     // Create category
     @PostMapping
     public ResponseEntity<CategoryCreatedDto> category(

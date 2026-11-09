@@ -4,10 +4,13 @@ import oms.com.example.oms.category.dto.CategoryCreatedDto;
 import oms.com.example.oms.category.dto.CategoryRequestDto;
 import oms.com.example.oms.category.dto.CategoryResponseDto;
 import oms.com.example.oms.common.exception.CategoryAlreadyExists;
+import oms.com.example.oms.common.exception.CategoryNotFound;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CategoryService {
@@ -18,7 +21,7 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    // Fetch category [[GET]]
+    // Fetch category
     public List<CategoryResponseDto> fetchCategory() {
         // Retrieves and returns a list of all department entities.
         List<Category> categories = categoryRepository.findAll();
@@ -31,6 +34,17 @@ public class CategoryService {
         return result;
     }
 
+    // Fetch category by Id
+    public CategoryResponseDto fetchCategoryById(long id){
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFound("Category not found"));
+
+        return new CategoryResponseDto(
+                category.getId(),
+                category.getName(),
+                category.getDescription()
+        );
+    }
 
     // Create category handling [[POST]]
     public CategoryCreatedDto createCategory(CategoryRequestDto request) {
