@@ -1,4 +1,8 @@
 package oms.com.example.oms.product;
 
-public interface ProductRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ProductRepository extends JpaRepository<Product, Long> {
+
+    boolean existProductName(String name);
 }

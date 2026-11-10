@@ -35,7 +35,19 @@
     
     DELETE /api/products/:id - Remove a product from the catalog. 
 ```
-
+# Product Response
+```json
+{
+  "name": "T-Shirt",
+  "description": "Cotton tee",
+  "categoryId": 1,
+  "variants": [
+    { "sku": "TS-RED-M", "size": "M", "color": "Red", "price": 19.99 },
+    { "sku": "TS-BLU-L", "size": "L", "color": "Blue", "price": 21.99 }
+  ]
+}
+```
+---
 - Trying out these first then:
 - Checklist:
 ```bash
@@ -53,5 +65,5 @@
     6. Place an order
     7. Get all orders for one user
     8. Check stock for one product
-
 ```
+

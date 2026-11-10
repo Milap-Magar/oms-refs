@@ -3,7 +3,7 @@ package oms.com.example.oms.product;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import oms.com.example.oms.Variant.Variant;
+import oms.com.example.oms.variant.Variant;
 import oms.com.example.oms.category.Category;
 
 import java.util.List;

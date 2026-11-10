@@ -1,4 +1,4 @@
-package oms.com.example.oms.Variant;
+package oms.com.example.oms.variant;
 
 import jakarta.persistence.*;
 import lombok.Getter;
