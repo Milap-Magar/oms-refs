@@ -3,29 +3,40 @@ package oms.com.example.oms.product;
 import jakarta.validation.Valid;
 import oms.com.example.oms.product.dto.ProductRequestDto;
 import oms.com.example.oms.product.dto.ProductResponseDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/product")
 public class ProductController {
 
-    private ProductService productService;
+    private final ProductService productService;
 
     public ProductController(ProductService productService){
         this.productService = productService;
     }
 
+    // Get all products
+    @GetMapping
+    public ResponseEntity<Page<ProductResponseDto>> products(
+            @RequestParam(defaultValue = "0") int start,
+            @RequestParam(defaultValue = "20") int size
+    ){
+        Pageable pageable = PageRequest.of(start, size);
+        return ResponseEntity.ok(productService.getProducts(pageable));
+    }
     // Create products
     @PostMapping
-    public ResponseEntity<ProductResponseDto> addProduct(
+    public ResponseEntity<String> addProduct(
             @Valid @RequestBody ProductRequestDto productRequestDto
     ){
-        ProductResponseDto response = productService.createProduct(productRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        productService.createProduct(productRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Product Created!");
     }
 }
