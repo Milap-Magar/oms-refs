@@ -1,18 +1,17 @@
 package oms.com.example.oms.product;
 
+import jakarta.transaction.Transactional;
 import oms.com.example.oms.category.dto.CategoryResponseDto;
 import oms.com.example.oms.common.exception.product.ProductIdNotFound;
-import oms.com.example.oms.common.exception.product.ProductNameAlreadyExists;
 import oms.com.example.oms.common.exception.product.ProductNotFound;
 import oms.com.example.oms.product.dto.ProductRequestDto;
 import oms.com.example.oms.product.dto.ProductResponseDto;
+import oms.com.example.oms.product.dto.ProductUpdateRequestDto;
+import oms.com.example.oms.variant.Variant;
 import oms.com.example.oms.variant.dto.VariantResponseDto;
-import org.hibernate.annotations.NotFound;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -90,5 +89,43 @@ public class ProductService {
         product.setVariants(product.getVariants());
 
         productRepository.save(product);
+    }
+
+    // update price only for now
+    // basically transactional is used for finding one variant in the list instead:
+    @Transactional
+    public ProductResponseDto updateProduct(
+            long productId,
+            long variantId,
+            ProductUpdateRequestDto request
+    ){
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFound("Product not found" + productId));
+
+        // fetch variants
+        Variant variant = product.getVariants().stream()
+                .filter(v -> v.getId() == variantId)
+                .findFirst()
+                .orElseThrow(() -> new ProductNotFound("Variant not found" + variantId));
+        variant.setPrice(request.price());
+        return new ProductResponseDto(
+                product.getId(),
+                product.getName(),
+                product.getDescription(),
+                new CategoryResponseDto(
+                       product.getCategory().getId(),
+                       product.getCategory().getName(),
+                       product.getCategory().getDescription()
+                ),
+                product.getVariants().stream()
+                        .map(v -> new VariantResponseDto(
+                                v.getId(),
+                                v.getSku(),
+                                v.getSize(),
+                                v.getColor(),
+                                v.getPrice()
+                        ))
+                        .toList()
+        );
     }
 }

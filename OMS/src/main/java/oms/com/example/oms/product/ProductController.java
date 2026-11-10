@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import oms.com.example.oms.product.dto.ProductRequestDto;
 import oms.com.example.oms.product.dto.ProductResponseDto;
+import oms.com.example.oms.product.dto.ProductUpdateRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -49,5 +50,15 @@ public class ProductController {
     ){
         productService.createProduct(productRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body("Product Created!");
+    }
+
+    // update products just pricing for now
+    @PutMapping("/{productId}/variants/{variantId}/price")
+    public ResponseEntity<ProductResponseDto> updatePrice(
+            @PathVariable long productId,
+            @PathVariable long variantId,
+            @Valid @RequestBody ProductUpdateRequestDto request
+            ){
+        return ResponseEntity.ok(productService.updateProduct(productId, variantId, request));
     }
 }

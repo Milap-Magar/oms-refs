@@ -57,9 +57,9 @@
 ```bash
   GET    /api/v1/users/{id}    
     Do it for:
-    1. List products
-    2. Get one product
-    3. Create a product
+    1. List products DONE
+    2. Get one product DONE
+    3. Create a product DONE
     4. Update a product's price
     5. Delete a product
     6. Place an order
