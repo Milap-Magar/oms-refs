@@ -128,4 +128,12 @@ public class ProductService {
                         .toList()
         );
     }
+
+    // delete product data via id
+    public void deleteProduct(long id){
+        if(!productRepository.existsById(id)){
+            throw new ProductIdNotFound("Product not found");
+        }
+        productRepository.deleteById(id);
+    }
 }
