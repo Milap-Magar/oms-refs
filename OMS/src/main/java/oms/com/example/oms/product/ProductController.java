@@ -1,6 +1,8 @@
 package oms.com.example.oms.product;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import oms.com.example.oms.product.dto.ProductRequestDto;
 import oms.com.example.oms.product.dto.ProductResponseDto;
 import org.springframework.data.domain.Page;
@@ -22,6 +24,15 @@ public class ProductController {
         this.productService = productService;
     }
 
+    // Get product by id
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponseDto> productById(
+            @PathVariable long id
+    ){
+        return ResponseEntity.status(HttpStatus.OK).body(
+                productService.getProductById(id)
+        );
+    }
     // Get all products
     @GetMapping
     public ResponseEntity<Page<ProductResponseDto>> products(

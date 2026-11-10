@@ -3,7 +3,9 @@ package oms.com.example.oms.common.exception;
 import oms.com.example.oms.common.exception.category.CategoryAlreadyExists;
 import oms.com.example.oms.common.exception.category.CategoryNotFound;
 import oms.com.example.oms.common.exception.category.CategoryRequired;
+import oms.com.example.oms.common.exception.product.ProductIdNotFound;
 import oms.com.example.oms.common.exception.product.ProductNameAlreadyExists;
+import oms.com.example.oms.common.exception.product.ProductNotFound;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -35,5 +37,17 @@ public class GlobalExceptionHandler{
     @ExceptionHandler(ProductNameAlreadyExists.class)
     public ResponseEntity ProductAlreadyExists(Exception ex){
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
+    // ProductIdNotFound
+    @ExceptionHandler(ProductIdNotFound.class)
+    public ResponseEntity ProductIdNotFound(Exception ex){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    // ProductNotFound
+    @ExceptionHandler(ProductNotFound.class)
+    public ResponseEntity ProductNotFound(Exception ex){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 }

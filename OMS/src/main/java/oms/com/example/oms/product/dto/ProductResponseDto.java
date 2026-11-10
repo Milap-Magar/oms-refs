@@ -13,5 +13,5 @@ public record ProductResponseDto(
    String name,
    String description,
    CategoryResponseDto category,
-    List<VariantResponseDto> variant
+   List<VariantResponseDto> variant
 ) {}
