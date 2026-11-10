@@ -4,9 +4,10 @@ import oms.com.example.oms.auth.dto.LoginDto;
 import oms.com.example.oms.auth.dto.LoginResponseDto;
 import oms.com.example.oms.auth.dto.RegisterDto;
 import oms.com.example.oms.auth.dto.RegisterResponseDto;
-import oms.com.example.oms.common.exception.EmailAlreadyExists;
-import oms.com.example.oms.common.exception.InvalidCredentialsException;
+import oms.com.example.oms.common.exception.auth.EmailAlreadyExists;
+import oms.com.example.oms.common.exception.auth.InvalidCredentialsException;
 import oms.com.example.oms.user.User;
+import oms.com.example.oms.user.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,18 +15,18 @@ import java.util.UUID;
 
 @Service
 public class AuthService {
-    private final AuthRepository authRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthService(AuthRepository authRepository, PasswordEncoder passwordEncoder) {
-        this.authRepository = authRepository;
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     // register services business handler
     public RegisterResponseDto register(RegisterDto request) {
 
-        if (authRepository.existsByEmail(request.email())) {
+        if (userRepository.existsByEmail(request.email())) {
             throw new EmailAlreadyExists("Email is already registered");
         }
 
@@ -35,14 +36,14 @@ public class AuthService {
         user.setPhone(request.phone());
         user.setPassword(passwordEncoder.encode(request.password()));
 
-        authRepository.save(user);
+        userRepository.save(user);
         return new RegisterResponseDto("User registered successfully", false);
     }
 
     // login services business handler
     public LoginResponseDto login(LoginDto request) {
 
-        User user = authRepository
+        User user = userRepository
                 .findByEmail(request.email())
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
 
@@ -51,6 +52,7 @@ public class AuthService {
         }
 
         return new LoginResponseDto(
+                user.getId(),
                 "verified",
                 false,
                 UUID.randomUUID(),
