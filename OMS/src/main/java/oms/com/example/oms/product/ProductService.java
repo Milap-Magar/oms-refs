@@ -39,6 +39,7 @@ public class ProductService {
                 p.getVariants().stream()
                         .map(v -> new VariantResponseDto(
                                 v.getId(),
+                                v.getProduct().getId(),
                                 v.getSku(),
                                 v.getSize(),
                                 v.getColor(),
@@ -69,6 +70,7 @@ public class ProductService {
                 product.getVariants().stream()
                         .map(v -> new VariantResponseDto(
                                 v.getId(),
+                                v.getProduct().getId(),
                                 v.getSku(),
                                 v.getColor(),
                                 v.getSize(),
@@ -120,6 +122,7 @@ public class ProductService {
                 product.getVariants().stream()
                         .map(v -> new VariantResponseDto(
                                 v.getId(),
+                                v.getProduct().getId(),
                                 v.getSku(),
                                 v.getSize(),
                                 v.getColor(),

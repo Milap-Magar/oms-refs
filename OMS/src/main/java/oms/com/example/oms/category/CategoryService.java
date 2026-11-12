@@ -33,7 +33,7 @@ public class CategoryService {
         return result;
     }
 
-    // Fetch category by Id
+    // Fetch category by id
     public CategoryResponseDto fetchCategoryById(long id){
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new CategoryNotFound("Category not found"));
