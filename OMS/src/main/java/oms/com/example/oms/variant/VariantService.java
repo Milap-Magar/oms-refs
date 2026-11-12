@@ -58,10 +58,6 @@ public class VariantService {
     // create variant
     public VariantResponseDto createVariant(VariantRequestDto request){
 
-//        // checking if the new variant is needed for not
-//        if(!variantRepository.existsById(request.product_id())){
-//            throw new VariantNotFound("Variant SKU already exists");
-//        }
         // find the product_id
         Product product = productRepository.findById(request.product_id())
                 .orElseThrow(() -> new ProductNotFound("Product not found"));
@@ -88,4 +84,10 @@ public class VariantService {
                 saved.getPrice()
         );
     }
+
+    // update variant
+    // update via sku
+    // update via color
+    // update via product_id
+    // update via price
 }
