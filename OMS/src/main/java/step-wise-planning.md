@@ -1,41 +1,62 @@
-# Step by Step planning for the project of OMS
+# OMS — Step-by-Step Plan
+
 ![img.png](img.png)
 
-- Basically OMS is acronym for ***Order management system***
-- It is basically the inventory and the handling of orders and products.
-- It can also track all the assets present in the storage.
+**OMS** stands for **Order Management System**. It manages the product catalog, tracks stock in storage, and handles customer orders.
 
-### Phase 1 : BASIC AUTHENTICATION
-- Create the authentication endpoints and handlers accordingly.
-- Generate `/login` && `/register` endpoints for the OMS.
-- Add a layer of protection like `isAuth()` before any of the order or inventory related operations.
+All endpoints live under `/api/v1`.
 
-#### Endppoints:
-```bash
-    POST /api/auth/register - Register a new user/admin in the system.
-    
-    POST /api/auth/login - Authenticate user credentials and return a session token or JWT.
-    
-    POST /api/auth/logout - Invalidate the user session or token.
-    
-    GET /api/auth/me - Retrieve the currently authenticated user's profile details.
-```
-### Phase 2 : Create Product Endpoints before Inventory [[CURRENTLY HERE]]
-- So, basically creating `/product` endpoints before any other because in inventory products are the major things needed for inventory management.
-- Create variables as well like kind of product details but with size, weight, and other essentials for a general inventory.
-- ENDPOINTS: 
-```bash
-    POST /api/products - Create a new product with details (name, description, SKU, size, weight, category, price).
-    
-    GET /api/products - Retrieve a paginated list of all products in the catalog.
-    
-    GET /api/products/:id - Retrieve details of a specific product by its ID.
-    
-    PUT /api/products/:id - Update an existing products details or specifications.
-    
-    DELETE /api/products/:id - Remove a product from the catalog. 
-```
-# Product Response
+## Progress
+
+| Phase | Module                     | Status          |
+|-------|----------------------------|-----------------|
+| 1     | Basic authentication       | Partly done     |
+| 2     | Category, Product, Variant | Almost done     |
+| 3     | Auth guard and roles       | **Next task**   |
+| 4     | Inventory                  | Not started     |
+| 5     | Orders                     | Not started     |
+
+---
+
+## Phase 1: Basic Authentication
+
+Register and log in users. Passwords are hashed with BCrypt.
+
+- [x] `POST /auth/register` — create a new user
+- [x] `POST /auth/login` — check credentials (token and role are still hardcoded, fixed in Phase 3)
+- [ ] `GET /auth/me` — return the logged-in user's profile (needs Phase 3)
+- [ ] `POST /auth/logout` — optional; with JWT the client just drops the token
+
+## Phase 2: Catalog (Category, Product, Variant)
+
+Products come before inventory because stock is counted per product variant.
+
+**Category**
+
+- [x] `GET /category` — list categories
+- [x] `GET /category/{id}` — get one category
+- [x] `POST /category` — create a category
+- [x] `PUT /category/{id}` — update a category
+- [x] `DELETE /category/{id}` — delete a category
+
+**Product**
+
+- [x] `GET /product` — paginated list of products
+- [x] `GET /product/{id}` — get one product
+- [x] `POST /product` — create a product
+- [x] `PUT /product/{productId}/variants/{variantId}/price` — update a variant's price
+- [x] `DELETE /product/{id}` — delete a product
+
+**Variant**
+
+- [x] `GET /variant` — paginated list of variants
+- [x] `GET /variant/{id}` — get one variant
+- [x] `POST /variant` — create a variant for a product
+- [ ] `PUT /variant/{id}` — update SKU, size, color, or price
+- [ ] `DELETE /variant/{id}` — delete a variant
+
+**Product shape**
+
 ```json
 {
   "name": "T-Shirt",
@@ -47,23 +68,54 @@
   ]
 }
 ```
----
-- Trying out these first then:
-- Checklist:
-```bash
-    - Category bascically for each product we needed these 2 aspects 
-```
-- Checklist
-```bash
-  GET    /api/v1/users/{id}    
-    Do it for:
-    1. List products DONE
-    2. Get one product DONE
-    3. Create a product DONE
-    4. Update a product's price
-    5. Delete a product
-    6. Place an order
-    7. Get all orders for one user
-    8. Check stock for one product
-```
 
+---
+
+## Phase 3: Auth Guard and Roles — NEXT TASK
+
+**Goal:** every request must come from a logged-in user, and only admins can change the catalog.
+
+This comes before orders because an order belongs to a user. The order code needs to know who is calling.
+
+**Access rules**
+
+| Action                                         | Guest | USER | ADMIN |
+|------------------------------------------------|-------|------|-------|
+| Register, log in                               | Yes   | Yes  | Yes   |
+| View products, categories, variants            | No    | Yes  | Yes   |
+| Create, update, delete products, categories, variants | No | No | Yes |
+
+**Steps**
+
+- [ ] **1. Role on the user.** Add a `Role` enum (`USER`, `ADMIN`) and a `role` column on `User`, defaulting to `USER`. Registration always sets `USER`; never read the role from the request body.
+- [ ] **2. JWT service.** Add the `jjwt` dependencies. Create `JwtService` with `generate(user)` and `parse(token)`. Keep `jwt.secret` in `application.yaml`.
+- [ ] **3. Real login response.** In `AuthService.login()`, return a generated token and the user's actual role instead of `"verified"` and `"admin"`.
+- [ ] **4. Auth filter.** Create `JwtAuthFilter` (`OncePerRequestFilter`). It reads `Authorization: Bearer <token>` and sets the user and role in the security context.
+- [ ] **5. Security rules.** In `SecurityConfig`: stateless sessions, `/auth/**` open, `GET` on the catalog for any logged-in user, all other catalog methods for `ADMIN` only, everything else authenticated. Register the filter.
+- [ ] **6. `GET /auth/me`.** Return the profile of the user in the token.
+- [ ] **7. First admin.** Promote one user to `ADMIN` directly in the database.
+
+**Done when**
+
+- [ ] `GET /product` without a token returns `401`
+- [ ] `GET /product` with a USER token returns `200`
+- [ ] `POST /product` with a USER token returns `403`
+- [ ] `POST /product` with an ADMIN token returns `201`
+
+## Phase 4: Inventory
+
+Track how many units of each variant are in storage. Orders depend on this.
+
+- [ ] `Inventory` entity: one row per variant with a quantity
+- [ ] `GET /inventory/{variantId}` — check stock for a variant (any logged-in user)
+- [ ] `PUT /inventory/{variantId}` — set or adjust stock (ADMIN)
+- [ ] Reject any change that would make stock negative
+
+## Phase 5: Orders
+
+- [ ] `Order` and `OrderItem` entities; each item stores the variant, quantity, and the price at the time of ordering
+- [ ] `POST /orders` — place an order for the logged-in user; check and reduce stock in one transaction
+- [ ] `GET /orders` — a user sees their own orders, an admin sees all
+- [ ] `GET /orders/{id}` — get one order (owner or ADMIN)
+- [ ] `PUT /orders/{id}/status` — change the order status (ADMIN)
+- [ ] Cancelling an order puts the stock back
