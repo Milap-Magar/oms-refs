@@ -23,6 +23,15 @@ public class VariantController {
         this.variantService = variantService;
     }
 
+    // get variant by id
+    @GetMapping("/{id}")
+    public ResponseEntity<VariantResponseDto> fetchVariantById(
+            @PathVariable long id
+    ){
+        VariantResponseDto variant = variantService.fetchVariantById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(variant);
+    }
+
     // get all variant
     @GetMapping
     public ResponseEntity<List<VariantResponseDto>> fetchVariant(
